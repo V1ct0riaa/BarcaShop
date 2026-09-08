@@ -86,7 +86,10 @@ if PRODUCTION:
             "PASSWORD": os.getenv("DB_PASSWORD"),
             "HOST": os.getenv("DB_HOST"),
             "PORT": os.getenv("DB_PORT"),
-            "OPTIONS": {"options": f"-c search_path={os.getenv('SCHEMA', 'public')}"},
+            "OPTIONS": {
+                "options": f"-c search_path={os.getenv('SCHEMA', 'public')}",
+                "sslmode": "require",
+            },
         }
     }
 else:
