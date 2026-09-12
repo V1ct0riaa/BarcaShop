@@ -5,6 +5,40 @@ from django.shortcuts import get_object_or_404, redirect, render
 from main.forms import ProductsForm
 from main.models import Product
 
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+
+def register(request):
+    form = UserCreationForm()
+
+    # Check if a request method is POST
+    if request.method == "POST":
+        form = UserCreationForm(request.POST) # make a form from existing library
+        if form.is_valid():
+            form.save() #save form
+            messages.success(request, "Your account has been created! You are now able to log in")
+            return redirect("main:login")
+    context = {"form": form} # Put form into context and pass it into register.html
+    return render(request, "register.html", context)
+
+def login_user(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST) # make a form from existing library
+
+        if form.is_valid():
+            user = form.get_user() # Get the user data
+            login(request, user) # Log the user in
+            return redirect("main:show_main") # Redirect to homepage
+    else:
+        form = AuthenticationForm(request)
+
+    context = {"form": form}
+    return render(request, "login.html", context)
+
+def logout_user(request):
+    logout(request)
+    return redirect("main:login")
 
 # Create your views here.
 def show_main(request):
